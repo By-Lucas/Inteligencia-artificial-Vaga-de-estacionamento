@@ -4,27 +4,22 @@ import cvzone
 import numpy as np
 
 # Video feed
-cap = cv2.VideoCapture('carPark.mp4')
+cap = cv2.VideoCapture('media/carPark.mp4')
 
-with open('CarParkPos', 'rb') as f:
+with open('arquivos/CarParkPos', 'rb') as f:
     posList = pickle.load(f)
 
 width, height = 107, 48
 
 def checkParkingSpace(imgPro):
-
     spaceCounter = 0
 
     for pos in posList:
         x, y = pos
 
         imgCrop = imgPro[y:y + height, x:x + width]
-        cv2.imshow(str(x * y), imgCrop)
+        #cv2.imshow(str(x * y), imgCrop)
         count = cv2.countNonZero(imgCrop)
-
-        # Espaço de cada carro
-        cvzone.putTextRect(img,str(count),(x,y+height-3), scale= 1.5, 
-                            thickness=1, offset=0, colorR=(0,0,255))
 
         if count < 900:
             color = (0,255,0)
@@ -34,9 +29,13 @@ def checkParkingSpace(imgPro):
             color = (0,0,255)
             thickness = 2
         cv2.rectangle(img, pos, (pos[0] + width, pos[1] + height), color, thickness)
+        # Espaço de cada carro
+        cvzone.putTextRect(img,str(count),(x,y+height-3), scale= 1.5, 
+                            thickness=1, offset=0, colorR=color)
+                            
     # Espaço de cada carro
-    cvzone.putTextRect(img,str(spaceCounter),(100, 50), scale= 5, 
-                        thickness=5, offset=20)
+    cvzone.putTextRect(img, f'Vagas: {spaceCounter} / {len(posList)}',(100, 50), scale= 3, 
+                        thickness=3, offset=20, colorR=(0,200,0))
 
 while True:
     if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
@@ -57,3 +56,6 @@ while True:
     #cv2.imshow("imageBlur", imgBlur)
     #cv2.imshow("imageThres", imgThreshold)
     cv2.waitKey(1)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
