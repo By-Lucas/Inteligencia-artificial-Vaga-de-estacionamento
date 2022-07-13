@@ -1,7 +1,6 @@
 import cv2
 import pickle
 
-
 width, height = 107, 48
 
 try:
@@ -9,7 +8,6 @@ try:
         posList = pickle.load(f)
 except:
     posList = []
-
 
 
 def mouseClick(events,x,y,flags,params):
@@ -20,8 +18,6 @@ def mouseClick(events,x,y,flags,params):
             x1,y1 = pos
             if x1 < x < x1 + width and y1 < y< y1 + height:
                 posList.pop(i)
-
-    
 
 while True:
     img = cv2.imread('carParkImg.png')
