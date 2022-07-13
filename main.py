@@ -12,6 +12,9 @@ with open('CarParkPos', 'rb') as f:
 width, height = 107, 48
 
 def checkParkingSpace(imgPro):
+
+    spaceCounter = 0
+
     for pos in posList:
         x, y = pos
 
@@ -20,15 +23,20 @@ def checkParkingSpace(imgPro):
         count = cv2.countNonZero(imgCrop)
 
         # Espaço de cada carro
-        cvzone.putTextRect(img,str(count),(x,y+height-3), scale= 1.5, thickness=1, offset=0)
+        cvzone.putTextRect(img,str(count),(x,y+height-3), scale= 1.5, 
+                            thickness=1, offset=0, colorR=(0,0,255))
 
-        if count < 800:
+        if count < 900:
             color = (0,255,0)
             thickness = 5
+            spaceCounter += 1
         else:
             color = (0,0,255)
             thickness = 2
         cv2.rectangle(img, pos, (pos[0] + width, pos[1] + height), color, thickness)
+    # Espaço de cada carro
+    cvzone.putTextRect(img,str(spaceCounter),(100, 50), scale= 5, 
+                        thickness=5, offset=20)
 
 while True:
     if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
